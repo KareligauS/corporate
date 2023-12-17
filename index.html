@@ -181,6 +181,12 @@
                 typeof initializationFunction == "function" ? initializationFunction(data) : `Initialization function "${initializationFunction}" wasn't found.`;
                 typeof resetDataFunction == "function" ? ResetData = resetDataFunction : `ResetData function "${resetDataFunction}" wasn't found.`;
                 BindElements();
+
+                switch(displayAnimation){
+                    case "fade":
+                        $(`#display`).fadeIn(400);
+                        break;
+                }
             };
 
             let operation = function(){
@@ -224,7 +230,6 @@
                 case "fade":
                     $(`#display`).fadeOut(400, function(){
                         operation();
-                        $(`#display`).fadeIn(400);
                     });
                     break;
                 default:
