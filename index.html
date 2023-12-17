@@ -6,17 +6,18 @@
     <script src="assets/moment-with-locales.js"></script>
     <script src="assets/jquery-3.7.1.js"></script>
     <script src="scripts/markup_functions.js"></script>
-    <link rel="stylesheet" href="../styles/index.css">
+    <link rel="stylesheet" href="styles/index.css">
     <title>Sehriyo Corporate</title>
 </head>
 <body>
+    <div id="styles"></div>
     <header id="header"></header>
     <main id="display"></main>
     <footer id="footer"></footer>
 
     <script type="text/javascript">
         var base_url = window.location.origin;
-        var api_url = `${base_url}`;
+        var site_url = `${base_url}`;
         var data = "";
         var pages = [];
         var components = [];
@@ -25,6 +26,8 @@
         var current_header_id = "";
         var current_footer_id = "";
         var current_display_id = "";
+
+        $("#styles").html(`<link rel="stylesheet" href="styles/main-display.css">`);
     
         $(document).ready(function(){
             const setup = async function(){
@@ -91,9 +94,9 @@
             }, delay)
         }
 
-        function InitializeMainPage(){}
-
         function ResetData(){}
+
+        function InitializeMainPage(){}
 
         function ResetMainPageData(){}
     
