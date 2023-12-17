@@ -72,11 +72,11 @@
     color: #7A7A7A;
 }
 
-img {
+.aboutus-main img {
     width: 350px;
     height: 480px;
 }
 
-li {
+.aboutus-main-info-list li {
     list-style-type: "– ";
 }
