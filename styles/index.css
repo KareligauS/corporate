@@ -12,3 +12,55 @@
 body{
     border-bottom: 1px solid gray;
 }
+
+.container {
+    max-width: 1140px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.logo {
+    width: 136px;
+    height: 47px;
+}
+
+.header-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-list-link {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.header-list-link a {
+    font-size: 20px;
+    color: #062d6f;
+}
+
+.header-login{
+    font-size: 15px;
+    color: #062d6f;
+}
+
+.footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #062d6f;
+    padding: 30px 0 20px;
+}
+
+.footer-text{
+    font-size: 11px;
+    color: rgba(255,255,255,.6);
+}

@@ -334,7 +334,7 @@
     color: #FFFFFF;
 }
 
-li {
+.prefooter-left-list li {
     list-style-type: "– ";
 }
 
