@@ -10,10 +10,14 @@
     <title>Sehriyo Corporate</title>
 </head>
 <body>
-    <div id="styles"></div>
-    <header id="header"></header>
-    <main id="display"></main>
-    <footer id="footer"></footer>
+    <div id="styles">
+        <div id="header-style"></div>
+        <div id="display-style"></div>
+        <div id="footer-style"></div>
+    </div>
+    <div id="header"></div>
+    <div id="display"></div>
+    <div id="footer"></div>
 
     <script type="text/javascript">
         var origin_url = window.location.origin;
@@ -39,7 +43,7 @@
                         footer_id: "main-footer",
                         initialization_function: InitializeMainPage,
                         resetdata_function: ResetMainPageData,
-                        animation: "fade",
+                        display_animation: "fade",
                         scroll_to_top: true
                     },
                     {
@@ -49,9 +53,39 @@
                         footer_id: "main-footer",
                         initialization_function: InitializeMainPage,
                         resetdata_function: ResetMainPageData,
-                        animation: "fade",
+                        display_animation: "fade",
                         scroll_to_top: true
-                    }
+                    },
+                    {
+                        page_id: "teacherspage",
+                        header_id: "main-header",
+                        display_id: "teachers-display",
+                        footer_id: "main-footer",
+                        initialization_function: InitializeMainPage,
+                        resetdata_function: ResetMainPageData,
+                        display_animation: "fade",
+                        scroll_to_top: true
+                    },
+                    {
+                        page_id: "loginpage",
+                        header_id: "",
+                        display_id: "login-display",
+                        footer_id: "",
+                        initialization_function: InitializeMainPage,
+                        resetdata_function: ResetMainPageData,
+                        display_animation: "fade",
+                        scroll_to_top: true
+                    },
+                    {
+                        page_id: "signuppage",
+                        header_id: "",
+                        display_id: "signup-display",
+                        footer_id: "",
+                        initialization_function: InitializeMainPage,
+                        resetdata_function: ResetMainPageData,
+                        display_animation: "fade",
+                        scroll_to_top: true
+                    },
                 ]
 
                 components = [
@@ -78,7 +112,26 @@
                         type: "display",
                         html_source: "components/aboutus-display.html",
                         style_source: "styles/aboutus-display.css",
-                    }
+                    },
+                    {
+                        id: "teachers-display",
+                        type: "display",
+                        html_source: "components/teachers-display.html",
+                        style_source: "styles/teachers-display.css",
+                    },
+                    {
+                        id: "login-display",
+                        type: "display",
+                        html_source: "components/login-display.html",
+                        style_source: "styles/login-display.css",
+                    },
+                    {
+                        id: "signup-display",
+                        type: "display",
+                        html_source: "components/singup-display.html",
+                        style_source: "styles/signup-display.css",
+                    },
+                    
                 ]
 
                 ChangePage("mainpage");
@@ -108,19 +161,7 @@
             $(".page-redirect").unbind("click");
             $(".page-redirect").on("click", function(event) {
                 let href = $(this).attr('href');
-                let pageId = "";
-
-                switch(href){
-                    case "#mainpage":
-                        pageId = "mainpage";
-                        break;
-                    case "#aboutuspage":
-                        pageId = "aboutuspage";
-                        break;
-                    default:
-                        console.log(`Unexpected pageid_href: ${href}`);
-                        break;
-                }
+                let pageId = href.slice(1);
 
                 if (pageId != "") {
                     ChangePage(pageId);
@@ -130,59 +171,65 @@
     
         function ChangePage(pageId){
             let pageInfo = pages.find((element) => element.page_id == pageId);
-            let componentsToLoad = [pageInfo["header_id"], pageInfo["display_id"], pageInfo["footer_id"]];
             let initializationFunction = pageInfo["initialization_function"];
             let resetDataFunction = pageInfo["resetdata_function"];
-            let animation = pageInfo["animation"];
+            let displayAnimation = pageInfo["display_animation"];
             let scrollToTop = pageInfo["scroll_to_top"];
-            
-            let stylesMarkup = "";
+
             let callback = function(){
                 current_components_ids["page"] = pageId;
                 typeof initializationFunction == "function" ? initializationFunction(data) : `Initialization function "${initializationFunction}" wasn't found.`;
                 typeof resetDataFunction == "function" ? ResetData = resetDataFunction : `ResetData function "${resetDataFunction}" wasn't found.`;
                 BindElements();
-                $("#styles").html(stylesMarkup);
             };
 
             let operation = function(){
                 callback();
             }
 
-            componentsToLoad.forEach(componentId => {
+            let componentsToLoad = ["footer", "display", "header"];
+            componentsToLoad.forEach(componentType => {
+                let componentId = pageInfo[`${componentType}_id`];
                 let componentInfo = components.find((element) => element.id == componentId);
-                let componentType = componentInfo["type"];
-                stylesMarkup += `<link rel="stylesheet" href="${componentInfo["style_source"]}">`;
-                if (componentId != current_components_ids[componentType]){
-                    let callbackTemp = callback;
+                let callbackTemp = callback;
+
+                if (typeof componentInfo != "undefined"){
+                    if (componentId != current_components_ids[componentType]){
+                        callback = function(){
+                            $(`#${componentType}-style`).html(`<link rel="stylesheet" href="${website_url}${componentInfo["style_source"]}">`);
+                            $(`#${componentType}`).load(`${website_url}${componentInfo["html_source"]}`, function(){
+                                callbackTemp();
+                                if ($(`#${componentType}`).css('display') == 'none'){
+                                    $(`#${componentType}`).show();
+                                }
+                            });
+                        }
+                    }
+                    current_components_ids[componentType] = componentId;
+                }
+                else {
                     callback = function(){
-                        $(`#${componentType}`).load(componentInfo["html_source"], function(){
+                        $(`#${componentType}`).hide(0, function(){
                             callbackTemp();
                         });
                     }
                 }
-                current_components_ids[componentType] = componentId;
             });
 
             if (scrollToTop){
                 $('html, body').animate({ scrollTop: 0 }, 500);
             }
 
-            if (animation == "fade") {
-                DisplayFadeAnimation(function(){
+            switch (displayAnimation){
+                case "fade":
+                    $(`#display`).fadeOut(400, function(){
+                        operation();
+                        $(`#display`).fadeIn(400);
+                    });
+                    break;
+                default:
                     operation();
-                });
             }
-            else {
-                operation();
-            }
-        }
-
-        function DisplayFadeAnimation(callback){
-            $('#display').fadeOut(400, function(){
-                callback();
-                $('#display').fadeIn(400);
-            });
         }
     </script>
 </body>
