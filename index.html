@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="assets/moment-with-locales.js"></script>
+    <script src="assets/jquery-3.7.1.js"></script>
+    <script src="scripts/markup_functions.js"></script>
+    <link rel="stylesheet" href="../styles/index.css">
+    <title>Sehriyo Corporate</title>
+</head>
+<body>
+    <header id="header"></header>
+    <main id="display"></main>
+    <footer id="footer"></footer>
+
+    <script type="text/javascript">
+        var base_url = window.location.origin;
+        var api_url = `${base_url}`;
+        var data = "";
+        var pages = [];
+        var components = [];
+
+        var current_page_id = "";
+        var current_header_id = "";
+        var current_footer_id = "";
+        var current_display_id = "";
+    
+        $(document).ready(function(){
+            const setup = async function(){
+                pages = [
+                    {
+                        page_id: "mainpage",
+                        header_id: "main-header",
+                        display_id: "main-display",
+                        footer_id: "main-footer",
+                        initialization_function: InitializeMainPage,
+                        resetdata_function: ResetMainPageData,
+                        animation: "fade",
+                        scroll_to_top: true
+                    },
+                    {
+                        page_id: "aboutuspage",
+                        header_id: "main-header",
+                        display_id: "aboutus-display",
+                        footer_id: "main-footer",
+                        initialization_function: InitializeMainPage,
+                        resetdata_function: ResetMainPageData,
+                        animation: "fade",
+                        scroll_to_top: true
+                    }
+                ]
+
+                components = [
+                    {
+                        id: "main-display",
+                        type: "display",
+                        source: "components/main-display.html"
+                    },
+                    {
+                        id: "main-header",
+                        type: "header",
+                        source: "components/main-header.html"
+                    },
+                    {
+                        id: "main-footer",
+                        type: "footer",
+                        source: "components/main-footer.html"
+                    },
+                    {
+                        id: "aboutus-display",
+                        type: "display",
+                        source: "components/aboutus-display.html"
+                    }
+                ]
+
+                ChangePage("mainpage");
+            }
+    
+            const loop = function(){
+                ResetData();
+            }
+    
+            Main(5000, setup, loop);
+        });
+    
+        async function Main(delay, setup, callback) {
+            await setup();
+            setInterval(()=> {
+                callback();
+            }, delay)
+        }
+
+        function InitializeMainPage(){}
+
+        function ResetData(){}
+
+        function ResetMainPageData(){}
+    
+        function BindElements(){
+            $(".page-redirect").unbind("click");
+            $(".page-redirect").on("click", function(event) {
+                let href = $(this).attr('href');
+                let pageId = "";
+
+                switch(href){
+                    case "#mainpage":
+                        pageId = "mainpage";
+                        break;
+                    case "#aboutuspage":
+                        pageId = "aboutuspage";
+                        break;
+                    default:
+                        console.log(`Unexpected pageid_href: ${href}`);
+                        break;
+                }
+
+                if (pageId != "") {
+                    ChangePage(pageId);
+                }
+            });
+        }
+    
+        function ChangePage(pageId){
+            let pageInfo = pages.find((element) => element.page_id == pageId);
+            let headerId = pageInfo["header_id"];
+            let displayId = pageInfo["display_id"];
+            let footerId = pageInfo["footer_id"];
+            let initializationFunction = pageInfo["initialization_function"];
+            let resetDataFunction = pageInfo["resetdata_function"];
+            let animation = pageInfo["animation"];
+            let scrollToTop = pageInfo["scroll_to_top"];
+
+            let callback = function(){
+                typeof initializationFunction == "function" ? initializationFunction(data) : `Initialization function "${initializationFunction}" wasn't found.`;
+                typeof resetDataFunction == "function" ? ResetData = resetDataFunction : `ResetData function "${resetDataFunction}" wasn't found.`;
+                BindElements();
+                current_page_id = pageId;
+            };
+
+            let operation = function(){
+                callback();
+            }
+
+            if (headerId != current_header_id){
+                let headerInfo = components.find((element) => element.id == headerId);
+                let callbackTemp = callback;
+                callback = function(){
+                    $("#header").load(headerInfo["source"], function(){
+                        current_header_id = headerId;
+                        callbackTemp();
+                    });
+                } 
+            }
+
+            if (displayId != current_display_id) {
+                let displayInfo = components.find((element) => element.id == displayId);
+                let callbackTemp = callback;
+                callback = function(){
+                    $("#display").load(displayInfo["source"], function(){
+                        current_display_id = displayId;
+                        callbackTemp();
+                    });
+                } 
+            }
+
+            if (footerId != current_footer_id) {
+                let footerInfo = components.find((element) => element.id == footerId);
+                let callbackTemp = callback;
+                callback = function(){
+                    $("#footer").load(footerInfo["source"], function(){
+                        current_footer_id = footerId;
+                        callbackTemp();
+                    });
+                } 
+            }
+
+            if (scrollToTop){
+                $('html, body').animate({ scrollTop: 0 }, 500);
+            }
+
+            if (animation == "fade") {
+                DisplayFadeAnimation(function(){
+                    operation();
+                });
+            }
+            else {
+                operation();
+            }
+        }
+
+        function DisplayFadeAnimation(callback){
+            $('#display').fadeOut(400, function(){
+                callback();
+                $('#display').fadeIn(400);
+            });
+        }
+    </script>
+</body>
+</html>

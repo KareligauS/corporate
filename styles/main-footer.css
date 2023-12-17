@@ -1,0 +1,23 @@
+@import 'fonts.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'Montserrat-Regular';
+}
+
+.footer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #062d6f;
+    padding: 30px 0 20px;
+}
+
+.footer-text{
+    font-size: 11px;
+    color: rgba(255,255,255,.6);
+}

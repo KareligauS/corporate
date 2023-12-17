@@ -1,0 +1,49 @@
+@import 'fonts.css';
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-decoration: none;
+    list-style: none;
+    font-family: 'Montserrat-Regular';
+}
+
+.container {
+    max-width: 1140px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+}
+
+.logo {
+    width: 136px;
+    height: 47px;
+}
+
+.header-list {
+    display: flex;
+    justify-content: space-between;
+}
+
+.header-list-link {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.header-list-link a {
+    font-size: 20px;
+    color: #062d6f;
+}
+
+.header-login{
+    font-size: 15px;
+    color: #062d6f;
+}
