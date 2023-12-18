@@ -8,3 +8,7 @@
     list-style: none;
     font-family: 'Montserrat-Regular';
 }
+
+body {
+    overflow-y: scroll;
+}

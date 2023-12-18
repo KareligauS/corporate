@@ -15,6 +15,7 @@
         <div id="display-style"></div>
         <div id="footer-style"></div>
     </div>
+    
     <div id="header"></div>
     <div id="display"></div>
     <div id="footer"></div>
@@ -184,7 +185,7 @@
 
                 switch(displayAnimation){
                     case "fade":
-                        $(`#display`).fadeIn(400);
+                        $(`#display, #footer`).fadeIn(400);
                         break;
                 }
             };
@@ -193,7 +194,7 @@
                 callback();
             }
 
-            let componentsToLoad = ["footer", "display", "header"];
+            let componentsToLoad = ["display", "footer", "header"];
             componentsToLoad.forEach(componentType => {
                 let componentId = pageInfo[`${componentType}_id`];
                 let componentInfo = components.find((element) => element.id == componentId);
@@ -211,7 +212,6 @@
                             });
                         }
                     }
-                    current_components_ids[componentType] = componentId;
                 }
                 else {
                     callback = function(){
@@ -220,6 +220,8 @@
                         });
                     }
                 }
+
+                current_components_ids[componentType] = componentId;
             });
 
             if (scrollToTop){
@@ -228,7 +230,7 @@
 
             switch (displayAnimation){
                 case "fade":
-                    $(`#display`).fadeOut(400, function(){
+                    $(`#display, #footer`).fadeOut(400, function(){
                         operation();
                     });
                     break;
